@@ -29,7 +29,12 @@ public class TimeSlotService {
         AvailabilityRule availabilityRule = availabilityRepository.findByOwner(owner);
 
         if (ObjectUtils.isEmpty(availabilityRule)) {
-            throw new Exception("Owner has not defined any Availability Rule.");
+            throw new Exception("Owner has not defined his Availability.");
+        }
+
+        // If the requested date is in the past, return empty list
+        if (date.isBefore(LocalDate.now())) {
+            return new ArrayList<>();
         }
 
         // Parse start and end time
@@ -42,6 +47,10 @@ public class TimeSlotService {
         LocalTime current = start;
         while (!current.plusHours(1).isAfter(end)) {
             LocalTime slotEnd = current.plusHours(1);
+            if (date.isEqual(LocalDate.now()) && current.isBefore(LocalTime.now())) {
+                current = slotEnd;
+                continue;
+            }
             allSlots.add(new TimeSlotResponseDTO(current, slotEnd));
             current = slotEnd;
         }

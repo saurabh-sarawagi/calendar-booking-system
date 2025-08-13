@@ -35,7 +35,7 @@ public class AppointmentService {
         AvailabilityRule availabilityRule = availabilityRepository.findByOwner(owner);
 
         if (ObjectUtils.isEmpty(availabilityRule)) {
-            throw new Exception("Owner has not defined any Availability Rule.");
+            throw new Exception("Owner has not defined his Availability.");
         }
 
         LocalTime start = LocalTime.parse(appointmentRequestDTO.getStartTime());
@@ -45,20 +45,7 @@ public class AppointmentService {
             throw new Exception("End Time should always be 1 hour more than Start Time");
         }
 
-//        if (start.isBefore(availabilityRule.getStartTime()) || end.isAfter(availabilityRule.getEndTime())) {
-//            throw new Exception("Slot not within availability");
-//        }
-//
-//        boolean appointmentExists = appointmentRepository.existsByOwnerIdAndDateAndStartTimeAndEndTime(appointmentRequestDTO.getOwnerId(), appointmentRequestDTO.getDate(), start, end);
-//        if (appointmentExists) {
-//            throw new Exception("This Timeslot is not available for booking appointment.");
-//        }
-
-//        Appointment appointment = AppointmentMapper.mapToEntity(appointmentRequestDTO, owner);
-//        Appointment savedAppointment = appointmentRepository.save(appointment);
-//        return AppointmentMapper.mapToResponse(savedAppointment);
-
-        // Directly checking using available time slot api
+        // checking availability using Search available time slot api
         List<TimeSlotResponseDTO> availableTimeSlots = timeSlotService.getAvailableTimeSlots(appointmentRequestDTO.getOwnerId(), appointmentRequestDTO.getDate());
 
         Optional<TimeSlotResponseDTO> matchingSlot = availableTimeSlots.stream().filter(slot -> slot.getStart().equals(start) && slot.getEnd().equals(end)).findFirst();

@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-    // boolean existsByOwnerIdAndDateAndStartTimeAndEndTime(Long ownerId, LocalDate date, LocalTime startTime, LocalTime endTime);
-
     List<Appointment> findByOwnerIdAndDate(Long ownerId, LocalDate date);
 
     @Query("SELECT a FROM Appointment a WHERE a.owner.id = :ownerId AND (a.date > :today OR (a.date = :today AND a.startTime >= :currentTime)) ORDER BY a.date, a.startTime")
