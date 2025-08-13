@@ -25,8 +25,8 @@ public class OwnerService {
         return ownerRepository.findAll().stream().map(OwnerMapper::mapToResponse).toList();
     }
 
-    public OwnerResponseDTO getOwnerById(Long id) {
-        Owner owner = ownerRepository.findById(id).orElseThrow(() -> new RuntimeException("Owner not found with id: " + id));
+    public OwnerResponseDTO getOwnerById(Long id) throws Exception {
+        Owner owner = ownerRepository.findById(id).orElseThrow(() -> new Exception("Owner not found with id: " + id));
         return OwnerMapper.mapToResponse(owner);
     }
 }

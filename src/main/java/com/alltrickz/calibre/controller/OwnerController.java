@@ -28,7 +28,7 @@ public class OwnerController {
     }
 
     @GetMapping("get/{id}")
-    public ResponseEntity<OwnerResponseDTO> getOwnerById(@PathVariable Long id) {
+    public ResponseEntity<OwnerResponseDTO> getOwnerById(@PathVariable Long id) throws Exception {
         return ResponseEntity.ok(ownerService.getOwnerById(id));
     }
 }
