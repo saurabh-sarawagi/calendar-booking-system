@@ -1,7 +1,10 @@
 package com.alltrickz.calibre.service;
 
 import com.alltrickz.calibre.dao.OwnerRepository;
+import com.alltrickz.calibre.dto.OwnerRequestDTO;
+import com.alltrickz.calibre.dto.OwnerResponseDTO;
 import com.alltrickz.calibre.entity.Owner;
+import com.alltrickz.calibre.mapper.OwnerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +16,17 @@ public class OwnerService {
 
     private final OwnerRepository ownerRepository;
 
-    public Owner createOwner(Owner owner) {
-        return ownerRepository.save(owner);
+    public OwnerResponseDTO createOwner(OwnerRequestDTO ownerRequestDTO) {
+        Owner owner = ownerRepository.save(OwnerMapper.mapToEntity(ownerRequestDTO));
+        return OwnerMapper.mapToResponse(owner);
     }
 
-    public List<Owner> getAllOwners() {
-        return ownerRepository.findAll();
+    public List<OwnerResponseDTO> getAllOwners() {
+        return ownerRepository.findAll().stream().map(OwnerMapper::mapToResponse).toList();
     }
 
-    public Owner getOwnerById(Long id) {
-        return ownerRepository.findById(id).orElseThrow(() -> new RuntimeException("Owner not found with id: " + id));
+    public OwnerResponseDTO getOwnerById(Long id) {
+        Owner owner = ownerRepository.findById(id).orElseThrow(() -> new RuntimeException("Owner not found with id: " + id));
+        return OwnerMapper.mapToResponse(owner);
     }
 }
