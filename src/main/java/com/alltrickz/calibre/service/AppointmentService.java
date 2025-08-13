@@ -13,7 +13,9 @@ import com.alltrickz.calibre.mapper.AppointmentMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -68,5 +70,18 @@ public class AppointmentService {
         } else {
             throw new Exception("This Timeslot is not available for booking appointment.");
         }
+    }
+
+    public List<AppointmentResponseDTO> getUpcomingAppointments(@RequestParam Long ownerId) throws Exception {
+        Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
+
+        AvailabilityRule availabilityRule = availabilityRepository.findByOwner(owner);
+
+        if (ObjectUtils.isEmpty(availabilityRule)) {
+            throw new Exception("Owner is not available for appointments.");
+        }
+
+        List<Appointment> appointments = appointmentRepository.findUpcomingAppointments(ownerId, LocalDate.now(), LocalTime.now());
+        return appointments.stream().map(AppointmentMapper::mapToResponse).toList();
     }
 }

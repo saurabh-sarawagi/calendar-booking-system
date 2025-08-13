@@ -6,10 +6,9 @@ import com.alltrickz.calibre.service.AppointmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/appointment")
@@ -22,4 +21,10 @@ public class AppointmentController {
     public ResponseEntity<AppointmentResponseDTO> bookAppointment(@Valid @RequestBody AppointmentRequestDTO appointmentRequestDTO) throws Exception {
         return ResponseEntity.ok(appointmentService.bookAppointment(appointmentRequestDTO));
     }
+
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<AppointmentResponseDTO>> getUpcomingAppointments(@RequestParam Long ownerId) throws Exception {
+        return ResponseEntity.ok(appointmentService.getUpcomingAppointments(ownerId));
+    }
+
 }
