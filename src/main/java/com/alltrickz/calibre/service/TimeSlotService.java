@@ -45,7 +45,7 @@ public class TimeSlotService {
 
         // Generate hourly slots
         LocalTime current = start;
-        while (!current.plusHours(1).isAfter(end)) {
+        while (!current.plusHours(1).isAfter(end) && !current.plusHours(1).equals(LocalTime.MIDNIGHT)) {
             LocalTime slotEnd = current.plusHours(1);
             if (date.isEqual(LocalDate.now()) && current.isBefore(LocalTime.now())) {
                 current = slotEnd;

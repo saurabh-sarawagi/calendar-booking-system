@@ -4,7 +4,7 @@ INSERT INTO OWNER (full_name, email, phone_number) VALUES ('Ranbir Agarwal', 'ra
 INSERT INTO OWNER (full_name, email, phone_number) VALUES ('Rohit Singh', 'rohit.singh@gmail.com', '2909040933');
 INSERT INTO OWNER (full_name, email, phone_number) VALUES ('Suman Verma', 'suman.verma@gmail.com', '8895859054');
 INSERT INTO AVAILABILITY_RULE (owner_id, start_time, end_time) VALUES (2, '10:00', '18:00');
-INSERT INTO AVAILABILITY_RULE (owner_id, start_time, end_time) VALUES (3, '01:00', '22:00');
+INSERT INTO AVAILABILITY_RULE (owner_id, start_time, end_time) VALUES (3, '00:00', '23:00');
 INSERT INTO AVAILABILITY_RULE (owner_id, start_time, end_time) VALUES (4, '09:00', '16:00');
 INSERT INTO APPOINTMENT (owner_id, date, start_time, end_time, invitee_name, invitee_email) VALUES (2, DATEADD('DAY', -1, CURRENT_DATE), '11:00', '12:00', 'Ankit Shah', 'ankit.shah@yahoo.com');
 INSERT INTO APPOINTMENT (owner_id, date, start_time, end_time, invitee_name, invitee_email) VALUES (2, DATEADD('DAY', -1, CURRENT_DATE), '16:00', '17:00', 'Rahul S', 'rahul.s@gmail.com');
