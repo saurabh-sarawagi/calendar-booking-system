@@ -1,8 +1,10 @@
 package com.alltrickz.calibre.service;
 
+import com.alltrickz.calibre.dao.AppointmentRepository;
 import com.alltrickz.calibre.dao.AvailabilityRepository;
 import com.alltrickz.calibre.dao.OwnerRepository;
 import com.alltrickz.calibre.dto.TimeSlotResponseDTO;
+import com.alltrickz.calibre.entity.Appointment;
 import com.alltrickz.calibre.entity.AvailabilityRule;
 import com.alltrickz.calibre.entity.Owner;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class TimeSlotService {
 
     private final AvailabilityRepository availabilityRepository;
     private final OwnerRepository ownerRepository;
+    private final AppointmentRepository appointmentRepository;
 
     public List<TimeSlotResponseDTO> getAvailableTimeSlots(Long ownerId, LocalDate date) throws Exception {
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
@@ -33,18 +36,18 @@ public class TimeSlotService {
         LocalTime start = availabilityRule.getStartTime();
         LocalTime end = availabilityRule.getEndTime();
 
-        List<TimeSlotResponseDTO> slots = new ArrayList<>();
+        List<TimeSlotResponseDTO> allSlots = new ArrayList<>();
 
         // Generate hourly slots
         LocalTime current = start;
         while (!current.plusHours(1).isAfter(end)) {
             LocalTime slotEnd = current.plusHours(1);
-            slots.add(new TimeSlotResponseDTO(current.toString(), slotEnd.toString()));
+            allSlots.add(new TimeSlotResponseDTO(current, slotEnd));
             current = slotEnd;
         }
 
-        // todo filter out booked slots once appointment table exists
-        return slots;
+        List<Appointment> appointments = appointmentRepository.findByOwnerIdAndDate(ownerId, date);
+        return allSlots.stream().filter(slot -> appointments.stream().noneMatch(booking -> booking.getStartTime().equals(slot.getStart()) && booking.getEndTime().equals(slot.getEnd()))).toList();
     }
 
 }
