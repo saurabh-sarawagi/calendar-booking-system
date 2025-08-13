@@ -8,7 +8,10 @@ import com.alltrickz.calibre.entity.AvailabilityRule;
 import com.alltrickz.calibre.entity.Owner;
 import com.alltrickz.calibre.mapper.AvailabilityMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +25,16 @@ public class AvailabilityService {
             throw new Exception("End Time must be greater than Start Time");
         }
         Owner owner = ownerRepository.findById(availabilityRequestDTO.getOwnerId()).orElseThrow(() -> new Exception("Owner Not Found"));
-        AvailabilityRule availabilityRule = AvailabilityMapper.mapToEntity(availabilityRequestDTO, owner);
+
+        // checking if availability rule already exist - if yes, update otherwise save
+        AvailabilityRule availabilityRule = availabilityRepository.findByOwner(owner);
+        if (!ObjectUtils.isEmpty(availabilityRule)) {
+            availabilityRule.setStartTime(LocalTime.parse(availabilityRequestDTO.getStartTime()));
+            availabilityRule.setEndTime(LocalTime.parse(availabilityRequestDTO.getEndTime()));
+        } else {
+            availabilityRule = AvailabilityMapper.mapToEntity(availabilityRequestDTO, owner);
+        }
+
         AvailabilityRule availabilityRuleAfterSave = availabilityRepository.save(availabilityRule);
         return AvailabilityMapper.mapToResponse(availabilityRuleAfterSave);
 
