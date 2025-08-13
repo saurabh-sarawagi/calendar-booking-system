@@ -1,12 +1,11 @@
 package com.alltrickz.calibre.controller;
 
-
+import com.alltrickz.calibre.entity.AvailabilityRule;
+import com.alltrickz.calibre.entity.Owner;
 import com.alltrickz.calibre.service.AvailabilityService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
 
@@ -18,9 +17,9 @@ public class AvailabilityController {
     private final AvailabilityService availabilityService;
 
     // endpoint to be used to set or update the availability rule for the owner
-    @PostMapping("/set")
-    public String setAvailability(@RequestParam LocalTime startTime, @RequestParam LocalTime endTime) {
-        return availabilityService.setAvailability(startTime, endTime);
+    @PostMapping("/set/{ownerId}")
+    public ResponseEntity<AvailabilityRule> setAvailability(@PathVariable Long ownerId, @RequestParam LocalTime startTime, @RequestParam LocalTime endTime) throws Exception {
+        return ResponseEntity.ok(availabilityService.setAvailability(ownerId, startTime, endTime));
     }
 
 }
