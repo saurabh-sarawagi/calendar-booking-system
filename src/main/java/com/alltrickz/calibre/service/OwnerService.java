@@ -21,6 +21,20 @@ public class OwnerService {
         return OwnerMapper.mapToResponse(owner);
     }
 
+    public OwnerResponseDTO updateOwner(Long id, OwnerRequestDTO ownerRequestDTO) throws Exception {
+        Owner existingOwner = ownerRepository.findById(id)
+                .orElseThrow(() -> new Exception("Owner not found with id: " + id));
+
+        // Map updated fields
+        existingOwner.setFullName(ownerRequestDTO.getFullName());
+        existingOwner.setEmail(ownerRequestDTO.getEmail());
+        existingOwner.setPhoneNumber(ownerRequestDTO.getPhoneNumber());
+
+        Owner updatedOwner = ownerRepository.save(existingOwner);
+        return OwnerMapper.mapToResponse(updatedOwner);
+    }
+
+
     public List<OwnerResponseDTO> getAllOwners() {
         return ownerRepository.findAll().stream().map(OwnerMapper::mapToResponse).toList();
     }

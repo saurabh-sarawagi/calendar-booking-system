@@ -22,6 +22,11 @@ public class OwnerController {
         return ResponseEntity.ok(ownerService.createOwner(ownerRequestDTO));
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<OwnerResponseDTO> updateOwner(@PathVariable Long id, @Valid @RequestBody OwnerRequestDTO ownerRequestDTO) throws Exception {
+        return ResponseEntity.ok(ownerService.updateOwner(id, ownerRequestDTO));
+    }
+
     @GetMapping("/get")
     public ResponseEntity<List<OwnerResponseDTO>> getAllOwners() {
         return ResponseEntity.ok(ownerService.getAllOwners());

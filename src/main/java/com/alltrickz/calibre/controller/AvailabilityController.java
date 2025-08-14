@@ -20,4 +20,9 @@ public class AvailabilityController {
         return ResponseEntity.ok(availabilityService.setAvailability(availabilityRequestDTO));
     }
 
+    @PatchMapping("/update")
+    public ResponseEntity<AvailabilityResponseDTO> updateAvailability(@Valid @RequestBody AvailabilityRequestDTO availabilityRequestDTO) throws Exception {
+        return ResponseEntity.ok(availabilityService.updateAvailability(availabilityRequestDTO));
+    }
+
 }

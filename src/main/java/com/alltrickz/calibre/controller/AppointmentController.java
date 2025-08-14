@@ -22,6 +22,12 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.bookAppointment(appointmentRequestDTO));
     }
 
+    @PatchMapping("/update/{appointmentId}")
+    public ResponseEntity<AppointmentResponseDTO> updateAppointment(@PathVariable Long appointmentId, @Valid @RequestBody AppointmentRequestDTO appointmentRequestDTO) throws Exception {
+        return ResponseEntity.ok(appointmentService.updateAppointment(appointmentId, appointmentRequestDTO));
+    }
+
+
     @GetMapping("/upcoming")
     public ResponseEntity<List<AppointmentResponseDTO>> getUpcomingAppointments(@RequestParam Long ownerId) throws Exception {
         return ResponseEntity.ok(appointmentService.getUpcomingAppointments(ownerId));
