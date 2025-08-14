@@ -90,4 +90,10 @@ public class AppointmentService {
         List<Appointment> appointments = appointmentRepository.findUpcomingAppointments(ownerId, LocalDate.now(), LocalTime.now());
         return appointments.stream().map(AppointmentMapper::mapToResponse).toList();
     }
+
+    public void deleteAppointment(Long appointmentId) throws Exception {
+        Appointment existingAppointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new Exception("Appointment not found with id: " + appointmentId));
+        appointmentRepository.delete(existingAppointment);
+    }
+
 }
