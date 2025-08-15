@@ -56,11 +56,6 @@ public class AppointmentService {
     }
 
     private void validateAppointmentRequest(AppointmentRequestDTO appointmentRequestDTO, Owner owner) throws Exception {
-        AvailabilityRule availabilityRule = availabilityRepository.findByOwner(owner);
-        if (ObjectUtils.isEmpty(availabilityRule)) {
-            throw new Exception("Owner has not defined his Availability.");
-        }
-
         LocalTime start = LocalTime.parse(appointmentRequestDTO.getStartTime());
         LocalTime end = LocalTime.parse(appointmentRequestDTO.getEndTime());
 

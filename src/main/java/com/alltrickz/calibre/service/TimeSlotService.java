@@ -28,8 +28,9 @@ public class TimeSlotService {
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
         AvailabilityRule availabilityRule = availabilityRepository.findByOwner(owner);
 
+        // Owner has not defined their availability
         if (ObjectUtils.isEmpty(availabilityRule)) {
-            throw new Exception("Owner has not defined his Availability.");
+            return new ArrayList<>();
         }
 
         // If the requested date is in the past, return empty list
