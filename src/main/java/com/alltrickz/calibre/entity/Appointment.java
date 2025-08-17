@@ -8,6 +8,7 @@ import java.time.LocalTime;
 
 @Entity
 @Data
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"owner_id", "date", "start_time", "end_time"}))
 public class Appointment {
 
     @Id

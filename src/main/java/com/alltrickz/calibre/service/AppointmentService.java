@@ -7,7 +7,9 @@ import com.alltrickz.calibre.dto.TimeSlotResponseDTO;
 import com.alltrickz.calibre.entity.Appointment;
 import com.alltrickz.calibre.entity.Owner;
 import com.alltrickz.calibre.mapper.AppointmentMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,14 +27,19 @@ public class AppointmentService {
     private final OwnerService ownerService;
     private final TimeSlotService timeSlotService;
 
+    @Transactional
     public AppointmentResponseDTO bookAppointment(AppointmentRequestDTO appointmentRequestDTO) throws Exception {
         Owner owner = ownerService.validateAndGetOwner(appointmentRequestDTO.getOwnerId());
         validateAppointmentRequest(appointmentRequestDTO, owner);
 
         // save the appointment
-        Appointment appointment = AppointmentMapper.mapToEntity(appointmentRequestDTO, owner);
-        Appointment savedAppointment = appointmentRepository.save(appointment);
-        return AppointmentMapper.mapToResponse(savedAppointment);
+        try {
+            Appointment appointment = AppointmentMapper.mapToEntity(appointmentRequestDTO, owner);
+            Appointment savedAppointment = appointmentRepository.saveAndFlush(appointment);
+            return AppointmentMapper.mapToResponse(savedAppointment);
+        } catch (DataIntegrityViolationException e) {
+            throw new Exception("Time slot already booked. Please pick another.");
+        }
 
     }
 
