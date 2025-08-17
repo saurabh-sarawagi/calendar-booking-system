@@ -27,15 +27,15 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.updateAppointment(appointmentId, appointmentRequestDTO));
     }
 
-    @GetMapping("/upcoming")
-    public ResponseEntity<List<AppointmentResponseDTO>> getUpcomingAppointments(@RequestParam Long ownerId) throws Exception {
-        return ResponseEntity.ok(appointmentService.getUpcomingAppointments(ownerId));
-    }
-
     @DeleteMapping("/cancel/{id}")
     public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) throws Exception {
         appointmentService.deleteAppointment(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/upcoming/{ownerId}")
+    public ResponseEntity<List<AppointmentResponseDTO>> getUpcomingAppointments(@PathVariable Long ownerId, @RequestParam(defaultValue = "10") int size) throws Exception {
+        return ResponseEntity.ok(appointmentService.getUpcomingAppointments(ownerId, size));
     }
 
 }

@@ -9,8 +9,9 @@ import com.alltrickz.calibre.entity.Appointment;
 import com.alltrickz.calibre.entity.Owner;
 import com.alltrickz.calibre.mapper.AppointmentMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -63,9 +64,10 @@ public class AppointmentService {
         }
     }
 
-    public List<AppointmentResponseDTO> getUpcomingAppointments(@RequestParam Long ownerId) throws Exception {
+    public List<AppointmentResponseDTO> getUpcomingAppointments(Long ownerId, int size) throws Exception {
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
-        List<Appointment> appointments = appointmentRepository.findUpcomingAppointments(ownerId, LocalDate.now(), LocalTime.now());
+        Pageable pageable = PageRequest.of(0, size);
+        List<Appointment> appointments = appointmentRepository.findUpcomingAppointments(ownerId, LocalDate.now(), LocalTime.now(), pageable);
         return appointments.stream().map(AppointmentMapper::mapToResponse).toList();
     }
 

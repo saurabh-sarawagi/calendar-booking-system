@@ -1,45 +1,56 @@
 package com.alltrickz.calibre.service;
 
-import com.alltrickz.calibre.dao.AppointmentRepository;
-import com.alltrickz.calibre.dao.AvailabilityRepository;
-import com.alltrickz.calibre.dao.OwnerRepository;
+import com.alltrickz.calibre.dao.*;
 import com.alltrickz.calibre.dto.TimeSlotResponseDTO;
 import com.alltrickz.calibre.entity.Appointment;
-import com.alltrickz.calibre.entity.AvailabilityRule;
+import com.alltrickz.calibre.entity.AvailabilityExceptionRule;
+import com.alltrickz.calibre.entity.AvailabilityWeeklyRule;
 import com.alltrickz.calibre.entity.Owner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TimeSlotService {
 
-    private final AvailabilityRepository availabilityRepository;
+    private final AvailabilityWeeklyRuleRepository availabilityWeeklyRuleRepository;
+    private final AvailabilityExceptionRuleRepository  availabilityExceptionRuleRepository;
     private final OwnerRepository ownerRepository;
     private final AppointmentRepository appointmentRepository;
 
     public List<TimeSlotResponseDTO> getAvailableTimeSlots(Long ownerId, LocalDate date) throws Exception {
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
-        Optional<AvailabilityRule> availabilityRuleOptional = availabilityRepository.findByOwner(owner);
-
-        if (availabilityRuleOptional.isEmpty()) {
-            return new ArrayList<>();
-        }
 
         // If the requested date is in the past, return empty list
         if (date.isBefore(LocalDate.now())) {
             return new ArrayList<>();
         }
 
-        // Parse start and end time
-        LocalTime start = availabilityRuleOptional.get().getStartTime();
-        LocalTime end = availabilityRuleOptional.get().getEndTime();
+        LocalTime start;
+        LocalTime end;
+
+        AvailabilityExceptionRule exceptionRule = availabilityExceptionRuleRepository.findByOwnerIdAndDate(ownerId, date);
+        if (exceptionRule != null) {
+            if (!exceptionRule.getIsActive()) {
+                return new ArrayList<>();
+            }
+            start = exceptionRule.getStartTime();
+            end = exceptionRule.getEndTime();
+        } else {
+            DayOfWeek dayOfWeek = date.getDayOfWeek();
+            AvailabilityWeeklyRule weeklyRule = availabilityWeeklyRuleRepository.findByOwnerIdAndDayOfWeek(ownerId, dayOfWeek);
+            if (weeklyRule == null || !weeklyRule.getIsActive()) {
+                return new ArrayList<>();
+            }
+            start = weeklyRule.getStartTime();
+            end = weeklyRule.getEndTime();
+        }
 
         List<TimeSlotResponseDTO> allSlots = new ArrayList<>();
 
