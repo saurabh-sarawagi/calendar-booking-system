@@ -2,7 +2,6 @@ package com.alltrickz.calibre.service;
 
 import com.alltrickz.calibre.dao.AvailabilityExceptionRuleRepository;
 import com.alltrickz.calibre.dao.AvailabilityWeeklyRuleRepository;
-import com.alltrickz.calibre.dao.OwnerRepository;
 import com.alltrickz.calibre.dto.AvailabilityExceptionRuleRequestDTO;
 import com.alltrickz.calibre.dto.AvailabilityExceptionRuleResponseDTO;
 import com.alltrickz.calibre.dto.AvailabilityWeeklyRuleRequestDTO;
@@ -31,11 +30,11 @@ public class AvailabilityService {
 
     private final AvailabilityWeeklyRuleRepository availabilityWeeklyRuleRepository;
     private final AvailabilityExceptionRuleRepository availabilityExceptionRuleRepository;
-    private final OwnerRepository ownerRepository;
+    private final OwnerService ownerService;
 
     @Transactional
     public List<AvailabilityWeeklyRuleResponseDTO> setWeeklyAvailability(Long ownerId, List<AvailabilityWeeklyRuleRequestDTO> availabilityWeeklyRuleRequestDTO) throws Exception {
-        Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
+        Owner owner = ownerService.validateAndGetOwner(ownerId);
         for(AvailabilityWeeklyRuleRequestDTO request : availabilityWeeklyRuleRequestDTO) {
             if (request.getIsAvailable()) {
                 if (StringUtils.isEmpty(request.getStartTime()) || StringUtils.isEmpty(request.getEndTime())) {
@@ -64,12 +63,12 @@ public class AvailabilityService {
     }
 
     public List<AvailabilityWeeklyRuleResponseDTO> getWeeklyAvailability(Long ownerId) throws Exception {
-        Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
+        ownerService.validateAndGetOwner(ownerId);
         return availabilityWeeklyRuleRepository.findByOwnerId(ownerId).stream().map(AvailabilityWeeklyRuleMapper::mapToResponse).collect(Collectors.toList());
     }
 
     public List<AvailabilityExceptionRuleResponseDTO> addExceptionRules(Long ownerId, List<AvailabilityExceptionRuleRequestDTO> availabilityExceptionRuleRequestDTO) throws Exception {
-        Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
+        Owner owner = ownerService.validateAndGetOwner(ownerId);
         for(AvailabilityExceptionRuleRequestDTO request : availabilityExceptionRuleRequestDTO) {
             if (request.getIsAvailable()) {
                 if (StringUtils.isEmpty(request.getStartTime()) || StringUtils.isEmpty(request.getEndTime())) {
@@ -100,7 +99,7 @@ public class AvailabilityService {
     }
 
     public List<AvailabilityExceptionRuleResponseDTO> getExceptionRules(Long ownerId) throws Exception {
-        Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
+        ownerService.validateAndGetOwner(ownerId);
         return availabilityExceptionRuleRepository.findByOwnerId(ownerId).stream().map(AvailabilityExceptionRuleMapper::mapToResponse).collect(Collectors.toList());
     }
 
@@ -111,4 +110,11 @@ public class AvailabilityService {
         availabilityExceptionRuleRepository.deleteById(id);
     }
 
+    public AvailabilityExceptionRule findExceptionRuleByOwnerAndDate(Long ownerId, LocalDate date) {
+        return availabilityExceptionRuleRepository.findByOwnerIdAndDate(ownerId, date);
+    }
+
+    public AvailabilityWeeklyRule findWeeklyRuleByOwnerAndDate(Long ownerId, DayOfWeek dayOfWeek) {
+        return availabilityWeeklyRuleRepository.findByOwnerIdAndDayOfWeek(ownerId, dayOfWeek);
+    }
 }

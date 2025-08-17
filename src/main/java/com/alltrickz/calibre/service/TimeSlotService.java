@@ -1,11 +1,10 @@
 package com.alltrickz.calibre.service;
 
-import com.alltrickz.calibre.dao.*;
+import com.alltrickz.calibre.dao.AppointmentRepository;
 import com.alltrickz.calibre.dto.TimeSlotResponseDTO;
 import com.alltrickz.calibre.entity.Appointment;
 import com.alltrickz.calibre.entity.AvailabilityExceptionRule;
 import com.alltrickz.calibre.entity.AvailabilityWeeklyRule;
-import com.alltrickz.calibre.entity.Owner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +18,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TimeSlotService {
 
-    private final AvailabilityWeeklyRuleRepository availabilityWeeklyRuleRepository;
-    private final AvailabilityExceptionRuleRepository  availabilityExceptionRuleRepository;
-    private final OwnerRepository ownerRepository;
+    private final OwnerService ownerService;
+    private final AvailabilityService availabilityService;
     private final AppointmentRepository appointmentRepository;
 
     public List<TimeSlotResponseDTO> getAvailableTimeSlots(Long ownerId, LocalDate date) throws Exception {
-        Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
+        ownerService.validateAndGetOwner(ownerId);
 
         // If the requested date is in the past, return empty list
         if (date.isBefore(LocalDate.now())) {
@@ -35,7 +33,7 @@ public class TimeSlotService {
         LocalTime start;
         LocalTime end;
 
-        AvailabilityExceptionRule exceptionRule = availabilityExceptionRuleRepository.findByOwnerIdAndDate(ownerId, date);
+        AvailabilityExceptionRule exceptionRule = availabilityService.findExceptionRuleByOwnerAndDate(ownerId, date);
         if (exceptionRule != null) {
             if (!exceptionRule.getIsAvailable()) {
                 return new ArrayList<>();
@@ -44,7 +42,7 @@ public class TimeSlotService {
             end = exceptionRule.getEndTime();
         } else {
             DayOfWeek dayOfWeek = date.getDayOfWeek();
-            AvailabilityWeeklyRule weeklyRule = availabilityWeeklyRuleRepository.findByOwnerIdAndDayOfWeek(ownerId, dayOfWeek);
+            AvailabilityWeeklyRule weeklyRule = availabilityService.findWeeklyRuleByOwnerAndDate(ownerId, dayOfWeek);
             if (weeklyRule == null || !weeklyRule.getIsAvailable()) {
                 return new ArrayList<>();
             }

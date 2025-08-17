@@ -1,7 +1,6 @@
 package com.alltrickz.calibre.service;
 
 import com.alltrickz.calibre.dao.AppointmentRepository;
-import com.alltrickz.calibre.dao.OwnerRepository;
 import com.alltrickz.calibre.dto.AppointmentRequestDTO;
 import com.alltrickz.calibre.dto.AppointmentResponseDTO;
 import com.alltrickz.calibre.dto.TimeSlotResponseDTO;
@@ -23,11 +22,11 @@ import java.util.Optional;
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final OwnerRepository ownerRepository;
+    private final OwnerService ownerService;
     private final TimeSlotService timeSlotService;
 
     public AppointmentResponseDTO bookAppointment(AppointmentRequestDTO appointmentRequestDTO) throws Exception {
-        Owner owner = ownerRepository.findById(appointmentRequestDTO.getOwnerId()).orElseThrow(() -> new Exception("Owner Not Found"));
+        Owner owner = ownerService.validateAndGetOwner(appointmentRequestDTO.getOwnerId());
         validateAppointmentRequest(appointmentRequestDTO, owner);
 
         // save the appointment
@@ -39,7 +38,7 @@ public class AppointmentService {
 
     public AppointmentResponseDTO updateAppointment(Long appointmentId, AppointmentRequestDTO appointmentRequestDTO) throws Exception {
         Appointment existingAppointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new Exception("Appointment not found with id: " + appointmentId));
-        Owner owner = ownerRepository.findById(existingAppointment.getOwner().getId()).orElseThrow(() -> new Exception("Owner Not Found"));
+        Owner owner = ownerService.validateAndGetOwner(existingAppointment.getOwner().getId());
         validateAppointmentRequest(appointmentRequestDTO, owner);
         AppointmentMapper.updateEntity(existingAppointment, appointmentRequestDTO);
         Appointment savedAppointment = appointmentRepository.save(existingAppointment);
@@ -65,7 +64,7 @@ public class AppointmentService {
     }
 
     public List<AppointmentResponseDTO> getUpcomingAppointments(Long ownerId, int size) throws Exception {
-        Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
+        ownerService.validateAndGetOwner(ownerId);
         Pageable pageable = PageRequest.of(0, size);
         List<Appointment> appointments = appointmentRepository.findUpcomingAppointments(ownerId, LocalDate.now(), LocalTime.now(), pageable);
         return appointments.stream().map(AppointmentMapper::mapToResponse).toList();

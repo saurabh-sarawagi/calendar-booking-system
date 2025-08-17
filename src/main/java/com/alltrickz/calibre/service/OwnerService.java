@@ -28,13 +28,15 @@ public class OwnerService {
         return OwnerMapper.mapToResponse(updatedOwner);
     }
 
-
     public List<OwnerResponseDTO> getAllOwners() {
         return ownerRepository.findAll().stream().map(OwnerMapper::mapToResponse).toList();
     }
 
     public OwnerResponseDTO getOwnerById(Long id) throws Exception {
-        Owner owner = ownerRepository.findById(id).orElseThrow(() -> new Exception("Owner not found with id: " + id));
-        return OwnerMapper.mapToResponse(owner);
+        return OwnerMapper.mapToResponse(validateAndGetOwner(id));
+    }
+
+    public Owner validateAndGetOwner(Long id) throws Exception {
+        return ownerRepository.findById(id).orElseThrow(() -> new Exception("Owner not found with id: " + id));
     }
 }
