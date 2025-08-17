@@ -19,5 +19,5 @@ public class AvailabilityWeeklyRuleRequestDTO {
     private String endTime;
 
     @NotNull
-    private Boolean isActive;
+    private Boolean isAvailable;
 }

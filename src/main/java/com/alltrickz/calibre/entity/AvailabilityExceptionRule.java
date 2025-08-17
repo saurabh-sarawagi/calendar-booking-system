@@ -26,7 +26,7 @@ public class AvailabilityExceptionRule {
     private LocalTime endTime;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean isAvailable;
 
     private String description;
 }

@@ -37,7 +37,7 @@ public class TimeSlotService {
 
         AvailabilityExceptionRule exceptionRule = availabilityExceptionRuleRepository.findByOwnerIdAndDate(ownerId, date);
         if (exceptionRule != null) {
-            if (!exceptionRule.getIsActive()) {
+            if (!exceptionRule.getIsAvailable()) {
                 return new ArrayList<>();
             }
             start = exceptionRule.getStartTime();
@@ -45,7 +45,7 @@ public class TimeSlotService {
         } else {
             DayOfWeek dayOfWeek = date.getDayOfWeek();
             AvailabilityWeeklyRule weeklyRule = availabilityWeeklyRuleRepository.findByOwnerIdAndDayOfWeek(ownerId, dayOfWeek);
-            if (weeklyRule == null || !weeklyRule.getIsActive()) {
+            if (weeklyRule == null || !weeklyRule.getIsAvailable()) {
                 return new ArrayList<>();
             }
             start = weeklyRule.getStartTime();

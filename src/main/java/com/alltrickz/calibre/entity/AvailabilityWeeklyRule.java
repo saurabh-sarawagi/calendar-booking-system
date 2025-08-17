@@ -27,6 +27,6 @@ public class AvailabilityWeeklyRule {
     private LocalTime endTime;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean isAvailable;
 
 }

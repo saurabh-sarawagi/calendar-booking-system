@@ -15,7 +15,7 @@ public class AvailabilityExceptionRuleMapper {
         availabilityExceptionRule.setDate(availabilityExceptionRuleRequestDTO.getDate());
         availabilityExceptionRule.setStartTime(availabilityExceptionRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityExceptionRuleRequestDTO.getStartTime()) : null);
         availabilityExceptionRule.setEndTime(availabilityExceptionRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityExceptionRuleRequestDTO.getEndTime()) : null);
-        availabilityExceptionRule.setIsActive(availabilityExceptionRuleRequestDTO.getIsActive());
+        availabilityExceptionRule.setIsAvailable(availabilityExceptionRuleRequestDTO.getIsAvailable());
         availabilityExceptionRule.setDescription(availabilityExceptionRuleRequestDTO.getDescription());
         return availabilityExceptionRule;
     }
@@ -27,7 +27,7 @@ public class AvailabilityExceptionRuleMapper {
                 availabilityExceptionRule.getDate(),
                 availabilityExceptionRule.getStartTime(),
                 availabilityExceptionRule.getEndTime(),
-                availabilityExceptionRule.getIsActive(),
+                availabilityExceptionRule.getIsAvailable(),
                 availabilityExceptionRule.getDescription()
         );
     }
@@ -37,7 +37,7 @@ public class AvailabilityExceptionRuleMapper {
         availabilityExceptionRule.setDate(availabilityExceptionRuleRequestDTO.getDate());
         availabilityExceptionRule.setStartTime(availabilityExceptionRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityExceptionRuleRequestDTO.getStartTime()) : null);
         availabilityExceptionRule.setEndTime(availabilityExceptionRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityExceptionRuleRequestDTO.getEndTime()) : null);
-        availabilityExceptionRule.setIsActive(availabilityExceptionRuleRequestDTO.getIsActive());
+        availabilityExceptionRule.setIsAvailable(availabilityExceptionRuleRequestDTO.getIsAvailable());
         availabilityExceptionRule.setDescription(availabilityExceptionRuleRequestDTO.getDescription());
     }
 }

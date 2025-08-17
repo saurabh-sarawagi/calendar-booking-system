@@ -19,7 +19,7 @@ public class AvailabilityExceptionRuleRequestDTO {
     private String endTime;
 
     @NotNull
-    private Boolean isActive;
+    private Boolean isAvailable;
 
     private String description;
 }

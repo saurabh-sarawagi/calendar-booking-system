@@ -37,9 +37,9 @@ public class AvailabilityService {
     public List<AvailabilityWeeklyRuleResponseDTO> setWeeklyAvailability(Long ownerId, List<AvailabilityWeeklyRuleRequestDTO> availabilityWeeklyRuleRequestDTO) throws Exception {
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
         for(AvailabilityWeeklyRuleRequestDTO request : availabilityWeeklyRuleRequestDTO) {
-            if (request.getIsActive()) {
+            if (request.getIsAvailable()) {
                 if (StringUtils.isEmpty(request.getStartTime()) || StringUtils.isEmpty(request.getEndTime())) {
-                    throw new Exception("Start and end time cannot be empty for active rule");
+                    throw new Exception("Start and end time cannot be empty for available rule");
                 }
 
                 if (request.getEndTime().compareTo(request.getStartTime()) <= 0) {
@@ -71,9 +71,9 @@ public class AvailabilityService {
     public List<AvailabilityExceptionRuleResponseDTO> addExceptionRules(Long ownerId, List<AvailabilityExceptionRuleRequestDTO> availabilityExceptionRuleRequestDTO) throws Exception {
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
         for(AvailabilityExceptionRuleRequestDTO request : availabilityExceptionRuleRequestDTO) {
-            if (request.getIsActive()) {
+            if (request.getIsAvailable()) {
                 if (StringUtils.isEmpty(request.getStartTime()) || StringUtils.isEmpty(request.getEndTime())) {
-                    throw new Exception("Start and end time cannot be empty for active rule");
+                    throw new Exception("Start and end time cannot be empty for available rule");
                 }
 
                 if (request.getEndTime().compareTo(request.getStartTime()) <= 0) {

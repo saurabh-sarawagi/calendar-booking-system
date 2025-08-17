@@ -15,7 +15,7 @@ public class AvailabilityWeeklyRuleMapper {
         availabilityWeeklyRule.setDayOfWeek(availabilityWeeklyRuleRequestDTO.getDayOfWeek());
         availabilityWeeklyRule.setStartTime(availabilityWeeklyRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityWeeklyRuleRequestDTO.getStartTime()) : null);
         availabilityWeeklyRule.setEndTime(availabilityWeeklyRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityWeeklyRuleRequestDTO.getEndTime()) : null);
-        availabilityWeeklyRule.setIsActive(availabilityWeeklyRuleRequestDTO.getIsActive());
+        availabilityWeeklyRule.setIsAvailable(availabilityWeeklyRuleRequestDTO.getIsAvailable());
         return availabilityWeeklyRule;
     }
 
@@ -26,15 +26,7 @@ public class AvailabilityWeeklyRuleMapper {
                 availabilityWeeklyRule.getDayOfWeek(),
                 availabilityWeeklyRule.getStartTime(),
                 availabilityWeeklyRule.getEndTime(),
-                availabilityWeeklyRule.getIsActive()
+                availabilityWeeklyRule.getIsAvailable()
         );
-    }
-
-    public static void updateEntity(AvailabilityWeeklyRule availabilityWeeklyRule, AvailabilityWeeklyRuleRequestDTO availabilityWeeklyRuleRequestDTO) {
-        // owner should not change on update
-        availabilityWeeklyRule.setDayOfWeek(availabilityWeeklyRuleRequestDTO.getDayOfWeek());
-        availabilityWeeklyRule.setStartTime(availabilityWeeklyRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityWeeklyRuleRequestDTO.getStartTime()) : null);
-        availabilityWeeklyRule.setEndTime(availabilityWeeklyRuleRequestDTO.getEndTime() != null ? LocalTime.parse(availabilityWeeklyRuleRequestDTO.getEndTime()) : null);
-        availabilityWeeklyRule.setIsActive(availabilityWeeklyRuleRequestDTO.getIsActive());
     }
 }

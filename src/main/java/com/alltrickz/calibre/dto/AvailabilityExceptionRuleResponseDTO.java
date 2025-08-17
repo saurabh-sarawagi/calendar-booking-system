@@ -17,6 +17,6 @@ public class AvailabilityExceptionRuleResponseDTO {
     private LocalTime startTime;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
-    private Boolean isActive;
+    private Boolean isAvailable;
     private String description;
 }
