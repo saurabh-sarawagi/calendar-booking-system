@@ -21,4 +21,10 @@ public class OwnerMapper {
                 owner.getPhoneNumber()
         );
     }
+
+    public static void updateEntity(Owner owner, OwnerRequestDTO ownerRequestDTO) {
+        owner.setFullName(ownerRequestDTO.getFullName());
+        owner.setEmail(ownerRequestDTO.getEmail());
+        owner.setPhoneNumber(ownerRequestDTO.getPhoneNumber());
+    }
 }

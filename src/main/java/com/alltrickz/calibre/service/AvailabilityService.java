@@ -14,6 +14,7 @@ import com.alltrickz.calibre.mapper.AvailabilityExceptionRuleMapper;
 import com.alltrickz.calibre.mapper.AvailabilityWeeklyRuleMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -33,8 +34,14 @@ public class AvailabilityService {
     public List<AvailabilityWeeklyRuleResponseDTO> setWeeklyAvailability(Long ownerId, List<AvailabilityWeeklyRuleRequestDTO> availabilityWeeklyRuleRequestDTO) throws Exception {
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
         for(AvailabilityWeeklyRuleRequestDTO request : availabilityWeeklyRuleRequestDTO) {
-            if (request.getIsActive() && request.getEndTime().compareTo(request.getStartTime()) <= 0) {
-                throw new Exception("End Time must be greater than Start Time");
+            if (request.getIsActive()) {
+                if (StringUtils.isEmpty(request.getStartTime()) || StringUtils.isEmpty(request.getEndTime())) {
+                    throw new Exception("Start and end time cannot be empty for active rule");
+                }
+
+                if (request.getEndTime().compareTo(request.getStartTime()) <= 0) {
+                    throw new Exception("End Time must be greater than Start Time");
+                }
             }
         }
 
@@ -46,9 +53,9 @@ public class AvailabilityService {
         List<AvailabilityWeeklyRule> toBeSaved = new ArrayList<>();
 
         for (AvailabilityWeeklyRuleRequestDTO availabilityWeeklyRuleDTO : availabilityWeeklyRuleRequestDTO) {
-            AvailabilityWeeklyRule availabilityWeeklyRule;
+            AvailabilityWeeklyRule availabilityWeeklyRule = existingWeeklyRuleMap.getOrDefault(availabilityWeeklyRuleDTO.getDayOfWeek(), new AvailabilityWeeklyRule());
             if (existingWeeklyRuleMap.containsKey(availabilityWeeklyRuleDTO.getDayOfWeek())) {
-                availabilityWeeklyRule = AvailabilityWeeklyRuleMapper.updateEntity(existingWeeklyRuleMap.get(availabilityWeeklyRuleDTO.getDayOfWeek()), availabilityWeeklyRuleDTO);
+                AvailabilityWeeklyRuleMapper.updateEntity(availabilityWeeklyRule, availabilityWeeklyRuleDTO);
             } else {
                 availabilityWeeklyRule = AvailabilityWeeklyRuleMapper.mapToEntity(availabilityWeeklyRuleDTO, owner);
             }
@@ -72,8 +79,14 @@ public class AvailabilityService {
     public List<AvailabilityExceptionRuleResponseDTO> addExceptionRules(Long ownerId, List<AvailabilityExceptionRuleRequestDTO> availabilityExceptionRuleRequestDTO) throws Exception {
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
         for(AvailabilityExceptionRuleRequestDTO request : availabilityExceptionRuleRequestDTO) {
-            if (request.getIsActive() && request.getEndTime().compareTo(request.getStartTime()) <= 0) {
-                throw new Exception("End Time must be greater than Start Time");
+            if (request.getIsActive()) {
+                if (StringUtils.isEmpty(request.getStartTime()) || StringUtils.isEmpty(request.getEndTime())) {
+                    throw new Exception("Start and end time cannot be empty for active rule");
+                }
+
+                if (request.getEndTime().compareTo(request.getStartTime()) <= 0) {
+                    throw new Exception("End Time must be greater than Start Time");
+                }
             }
 
             if (request.getDate().isBefore(LocalDate.now())) {
@@ -83,9 +96,13 @@ public class AvailabilityService {
 
         List<AvailabilityExceptionRule> toBeSaved =  new ArrayList<>();
         for (AvailabilityExceptionRuleRequestDTO request : availabilityExceptionRuleRequestDTO) {
-            Optional<AvailabilityExceptionRule> existing = availabilityExceptionRuleRepository.findByOwnerIdAndDate(ownerId, request.getDate());
-            AvailabilityExceptionRule entity = (existing.isPresent()) ? AvailabilityExceptionRuleMapper.updateEntity(existing.get(), request) : AvailabilityExceptionRuleMapper.mapToEntity(request, owner);
-            toBeSaved.add(entity);
+            AvailabilityExceptionRule availabilityExceptionRule = availabilityExceptionRuleRepository.findByOwnerIdAndDate(ownerId, request.getDate());
+            if (availabilityExceptionRule != null) {
+                AvailabilityExceptionRuleMapper.updateEntity(availabilityExceptionRule, request);
+            } else {
+                availabilityExceptionRule = AvailabilityExceptionRuleMapper.mapToEntity(request, owner);
+            }
+            toBeSaved.add(availabilityExceptionRule);
         }
         return availabilityExceptionRuleRepository.saveAll(toBeSaved).stream().map(AvailabilityExceptionRuleMapper::mapToResponse).collect(Collectors.toList());
     }

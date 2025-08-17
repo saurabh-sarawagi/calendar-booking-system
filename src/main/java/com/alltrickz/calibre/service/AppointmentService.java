@@ -40,13 +40,7 @@ public class AppointmentService {
         Appointment existingAppointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new Exception("Appointment not found with id: " + appointmentId));
         Owner owner = ownerRepository.findById(existingAppointment.getOwner().getId()).orElseThrow(() -> new Exception("Owner Not Found"));
         validateAppointmentRequest(appointmentRequestDTO, owner);
-
-        // Update the appointment fields - owner won't be updated
-        existingAppointment.setDate(appointmentRequestDTO.getDate());
-        existingAppointment.setStartTime(LocalTime.parse(appointmentRequestDTO.getStartTime()));
-        existingAppointment.setEndTime(LocalTime.parse(appointmentRequestDTO.getEndTime()));
-        existingAppointment.setInviteeName(appointmentRequestDTO.getInviteeName());
-        existingAppointment.setInviteeEmail(appointmentRequestDTO.getInviteeEmail());
+        AppointmentMapper.updateEntity(existingAppointment, appointmentRequestDTO);
         Appointment savedAppointment = appointmentRepository.save(existingAppointment);
         return AppointmentMapper.mapToResponse(savedAppointment);
     }

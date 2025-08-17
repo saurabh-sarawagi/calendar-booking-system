@@ -13,8 +13,8 @@ public class AvailabilityExceptionRuleMapper {
         AvailabilityExceptionRule availabilityExceptionRule = new AvailabilityExceptionRule();
         availabilityExceptionRule.setOwner(owner);
         availabilityExceptionRule.setDate(availabilityExceptionRuleRequestDTO.getDate());
-        availabilityExceptionRule.setStartTime(LocalTime.parse(availabilityExceptionRuleRequestDTO.getStartTime()));
-        availabilityExceptionRule.setEndTime(LocalTime.parse(availabilityExceptionRuleRequestDTO.getEndTime()));
+        availabilityExceptionRule.setStartTime(availabilityExceptionRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityExceptionRuleRequestDTO.getStartTime()) : null);
+        availabilityExceptionRule.setEndTime(availabilityExceptionRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityExceptionRuleRequestDTO.getEndTime()) : null);
         availabilityExceptionRule.setIsActive(availabilityExceptionRuleRequestDTO.getIsActive());
         availabilityExceptionRule.setDescription(availabilityExceptionRuleRequestDTO.getDescription());
         return availabilityExceptionRule;
@@ -32,13 +32,12 @@ public class AvailabilityExceptionRuleMapper {
         );
     }
 
-    public static AvailabilityExceptionRule updateEntity(AvailabilityExceptionRule entity, AvailabilityExceptionRuleRequestDTO availabilityExceptionRuleRequestDTO) {
+    public static void updateEntity(AvailabilityExceptionRule availabilityExceptionRule, AvailabilityExceptionRuleRequestDTO availabilityExceptionRuleRequestDTO) {
         // owner should not change on update
-        entity.setDate(availabilityExceptionRuleRequestDTO.getDate());
-        entity.setStartTime(availabilityExceptionRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityExceptionRuleRequestDTO.getStartTime()) : null);
-        entity.setEndTime(availabilityExceptionRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityExceptionRuleRequestDTO.getEndTime()) : null);
-        entity.setIsActive(availabilityExceptionRuleRequestDTO.getIsActive());
-        entity.setDescription(availabilityExceptionRuleRequestDTO.getDescription());
-        return entity;
+        availabilityExceptionRule.setDate(availabilityExceptionRuleRequestDTO.getDate());
+        availabilityExceptionRule.setStartTime(availabilityExceptionRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityExceptionRuleRequestDTO.getStartTime()) : null);
+        availabilityExceptionRule.setEndTime(availabilityExceptionRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityExceptionRuleRequestDTO.getEndTime()) : null);
+        availabilityExceptionRule.setIsActive(availabilityExceptionRuleRequestDTO.getIsActive());
+        availabilityExceptionRule.setDescription(availabilityExceptionRuleRequestDTO.getDescription());
     }
 }

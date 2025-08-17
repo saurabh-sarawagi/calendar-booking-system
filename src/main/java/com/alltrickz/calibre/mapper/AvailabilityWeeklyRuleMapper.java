@@ -13,8 +13,8 @@ public class AvailabilityWeeklyRuleMapper {
         AvailabilityWeeklyRule availabilityWeeklyRule = new AvailabilityWeeklyRule();
         availabilityWeeklyRule.setOwner(owner);
         availabilityWeeklyRule.setDayOfWeek(availabilityWeeklyRuleRequestDTO.getDayOfWeek());
-        availabilityWeeklyRule.setStartTime(LocalTime.parse(availabilityWeeklyRuleRequestDTO.getStartTime()));
-        availabilityWeeklyRule.setEndTime(LocalTime.parse(availabilityWeeklyRuleRequestDTO.getEndTime()));
+        availabilityWeeklyRule.setStartTime(availabilityWeeklyRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityWeeklyRuleRequestDTO.getStartTime()) : null);
+        availabilityWeeklyRule.setEndTime(availabilityWeeklyRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityWeeklyRuleRequestDTO.getEndTime()) : null);
         availabilityWeeklyRule.setIsActive(availabilityWeeklyRuleRequestDTO.getIsActive());
         return availabilityWeeklyRule;
     }
@@ -30,12 +30,11 @@ public class AvailabilityWeeklyRuleMapper {
         );
     }
 
-    public static AvailabilityWeeklyRule updateEntity(AvailabilityWeeklyRule entity, AvailabilityWeeklyRuleRequestDTO dto) {
+    public static void updateEntity(AvailabilityWeeklyRule availabilityWeeklyRule, AvailabilityWeeklyRuleRequestDTO availabilityWeeklyRuleRequestDTO) {
         // owner should not change on update
-        entity.setDayOfWeek(dto.getDayOfWeek());
-        entity.setStartTime(dto.getStartTime() != null ? LocalTime.parse(dto.getStartTime()) : null);
-        entity.setEndTime(dto.getEndTime() != null ? LocalTime.parse(dto.getEndTime()) : null);
-        entity.setIsActive(dto.getIsActive());
-        return entity;
+        availabilityWeeklyRule.setDayOfWeek(availabilityWeeklyRuleRequestDTO.getDayOfWeek());
+        availabilityWeeklyRule.setStartTime(availabilityWeeklyRuleRequestDTO.getStartTime() != null ? LocalTime.parse(availabilityWeeklyRuleRequestDTO.getStartTime()) : null);
+        availabilityWeeklyRule.setEndTime(availabilityWeeklyRuleRequestDTO.getEndTime() != null ? LocalTime.parse(availabilityWeeklyRuleRequestDTO.getEndTime()) : null);
+        availabilityWeeklyRule.setIsActive(availabilityWeeklyRuleRequestDTO.getIsActive());
     }
 }

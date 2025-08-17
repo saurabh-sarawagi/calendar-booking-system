@@ -32,4 +32,14 @@ public class AppointmentMapper {
         );
     }
 
+    public static void updateEntity(Appointment appointment, AppointmentRequestDTO appointmentRequestDTO) {
+        // Update the appointment fields - owner won't be updated
+        appointment.setDate(appointmentRequestDTO.getDate());
+        appointment.setStartTime(LocalTime.parse(appointmentRequestDTO.getStartTime()));
+        appointment.setEndTime(LocalTime.parse(appointmentRequestDTO.getEndTime()));
+        appointment.setInviteeName(appointmentRequestDTO.getInviteeName());
+        appointment.setInviteeEmail(appointmentRequestDTO.getInviteeEmail());
+    }
+
+
 }
