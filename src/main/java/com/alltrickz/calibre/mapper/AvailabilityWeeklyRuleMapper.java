@@ -7,8 +7,19 @@ import com.alltrickz.calibre.entity.Owner;
 
 import java.time.LocalTime;
 
+/**
+ * Mapper class for converting between AvailabilityWeeklyRule entity and DTOs.
+ * All methods are static and stateless.
+ */
 public class AvailabilityWeeklyRuleMapper {
 
+    /**
+     * Converts AvailabilityWeeklyRuleRequestDTO to AvailabilityWeeklyRule entity.
+     *
+     * @param availabilityWeeklyRuleRequestDTO   the request DTO
+     * @param owner the owner entity
+     * @return mapped AvailabilityWeeklyRule entity
+     */
     public static AvailabilityWeeklyRule mapToEntity(AvailabilityWeeklyRuleRequestDTO availabilityWeeklyRuleRequestDTO, Owner owner) {
         AvailabilityWeeklyRule availabilityWeeklyRule = new AvailabilityWeeklyRule();
         availabilityWeeklyRule.setOwner(owner);
@@ -19,6 +30,12 @@ public class AvailabilityWeeklyRuleMapper {
         return availabilityWeeklyRule;
     }
 
+    /**
+     * Converts AvailabilityWeeklyRule entity to AvailabilityWeeklyRuleResponseDTO.
+     *
+     * @param availabilityWeeklyRule the entity
+     * @return mapped response DTO
+     */
     public static AvailabilityWeeklyRuleResponseDTO mapToResponse(AvailabilityWeeklyRule availabilityWeeklyRule) {
         return new AvailabilityWeeklyRuleResponseDTO(
                 availabilityWeeklyRule.getId(),

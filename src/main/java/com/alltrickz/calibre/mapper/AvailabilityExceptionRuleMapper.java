@@ -7,8 +7,19 @@ import com.alltrickz.calibre.entity.Owner;
 
 import java.time.LocalTime;
 
+/**
+ * Mapper class for converting between AvailabilityExceptionRule entity and DTOs.
+ * All methods are static and stateless.
+ */
 public class AvailabilityExceptionRuleMapper {
 
+    /**
+     * Converts AvailabilityExceptionRuleRequestDTO to AvailabilityExceptionRule entity.
+     *
+     * @param availabilityExceptionRuleRequestDTO   the request DTO
+     * @param owner the owner entity
+     * @return mapped AvailabilityExceptionRule entity
+     */
     public static AvailabilityExceptionRule mapToEntity(AvailabilityExceptionRuleRequestDTO availabilityExceptionRuleRequestDTO, Owner owner) {
         AvailabilityExceptionRule availabilityExceptionRule = new AvailabilityExceptionRule();
         availabilityExceptionRule.setOwner(owner);
@@ -20,6 +31,12 @@ public class AvailabilityExceptionRuleMapper {
         return availabilityExceptionRule;
     }
 
+    /**
+     * Converts AvailabilityExceptionRule entity to AvailabilityExceptionRuleResponseDTO.
+     *
+     * @param availabilityExceptionRule the entity
+     * @return mapped response DTO
+     */
     public static AvailabilityExceptionRuleResponseDTO mapToResponse(AvailabilityExceptionRule availabilityExceptionRule) {
         return new AvailabilityExceptionRuleResponseDTO(
                 availabilityExceptionRule.getId(),
@@ -32,6 +49,13 @@ public class AvailabilityExceptionRuleMapper {
         );
     }
 
+    /**
+     * Updates an existing AvailabilityExceptionRule entity from DTO values.
+     * The owner is not updated.
+     *
+     * @param availabilityExceptionRule the entity to update
+     * @param availabilityExceptionRuleRequestDTO    the DTO containing new values
+     */
     public static void updateEntity(AvailabilityExceptionRule availabilityExceptionRule, AvailabilityExceptionRuleRequestDTO availabilityExceptionRuleRequestDTO) {
         // owner should not change on update
         availabilityExceptionRule.setDate(availabilityExceptionRuleRequestDTO.getDate());

@@ -10,13 +10,27 @@ import java.time.LocalTime;
 @Data
 @AllArgsConstructor
 public class AvailabilityExceptionRuleResponseDTO {
+
+    /** Unique identifier of the rule */
     private Long id;
+
+    /** Owner for whom this rule belongs */
     private Long ownerId;
+
+    /** Specific date for the exception */
     private LocalDate date;
+
+    /** Start time for this exception */
     @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
+
+    /** End time for this exception */
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
+
+    /** Whether available on this date */
     private Boolean isAvailable;
+
+    /** Description for the exception (e.g., "Vacation") */
     private String description;
 }
