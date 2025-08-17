@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,30 +48,19 @@ public class AvailabilityService {
             }
         }
 
-        // fetch existing rules for the owner
-        List<AvailabilityWeeklyRule> existingRules = availabilityWeeklyRuleRepository.findByOwnerId(ownerId);
-        Map<DayOfWeek, AvailabilityWeeklyRule> existingWeeklyRuleMap = existingRules.stream().collect(Collectors.toMap(AvailabilityWeeklyRule::getDayOfWeek, rule->rule));
-
-        Set<DayOfWeek> requestDays = availabilityWeeklyRuleRequestDTO.stream().map(AvailabilityWeeklyRuleRequestDTO::getDayOfWeek).collect(Collectors.toSet());
-        List<AvailabilityWeeklyRule> toBeSaved = new ArrayList<>();
-
-        for (AvailabilityWeeklyRuleRequestDTO availabilityWeeklyRuleDTO : availabilityWeeklyRuleRequestDTO) {
-            AvailabilityWeeklyRule availabilityWeeklyRule = existingWeeklyRuleMap.getOrDefault(availabilityWeeklyRuleDTO.getDayOfWeek(), new AvailabilityWeeklyRule());
-            if (existingWeeklyRuleMap.containsKey(availabilityWeeklyRuleDTO.getDayOfWeek())) {
-                AvailabilityWeeklyRuleMapper.updateEntity(availabilityWeeklyRule, availabilityWeeklyRuleDTO);
-            } else {
-                availabilityWeeklyRule = AvailabilityWeeklyRuleMapper.mapToEntity(availabilityWeeklyRuleDTO, owner);
+        // Ensure no duplicate days - although it'll be validated by db too
+        Set<DayOfWeek> seenDays = new HashSet<>();
+        for (AvailabilityWeeklyRuleRequestDTO dto : availabilityWeeklyRuleRequestDTO) {
+            if (!seenDays.add(dto.getDayOfWeek())) {
+                throw new Exception("Duplicate day found: " + dto.getDayOfWeek());
             }
-            toBeSaved.add(availabilityWeeklyRule);
         }
 
-        List<AvailabilityWeeklyRule> toBeDeleted = existingRules.stream().filter(rule -> !requestDays.contains(rule.getDayOfWeek())).collect(Collectors.toList());
-        if (!toBeDeleted.isEmpty()) {
-            availabilityWeeklyRuleRepository.deleteAllInBatch(toBeDeleted);
-        }
+        availabilityWeeklyRuleRepository.deleteByOwnerId(ownerId);
+        availabilityWeeklyRuleRepository.flush();
 
-        List<AvailabilityWeeklyRule> saved = availabilityWeeklyRuleRepository.saveAll(toBeSaved);
-        return saved.stream().map(AvailabilityWeeklyRuleMapper::mapToResponse).collect(Collectors.toList());
+        List<AvailabilityWeeklyRule> toBeSaved = availabilityWeeklyRuleRequestDTO.stream().map(dto -> AvailabilityWeeklyRuleMapper.mapToEntity(dto, owner)).toList();
+        return availabilityWeeklyRuleRepository.saveAll(toBeSaved).stream().map(AvailabilityWeeklyRuleMapper::mapToResponse).toList();
     }
 
     public List<AvailabilityWeeklyRuleResponseDTO> getWeeklyAvailability(Long ownerId) throws Exception {

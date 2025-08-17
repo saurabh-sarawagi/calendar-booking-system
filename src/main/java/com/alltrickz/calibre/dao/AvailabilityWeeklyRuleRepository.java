@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface AvailabilityWeeklyRuleRepository extends JpaRepository<AvailabilityWeeklyRule, Long> {
     List<AvailabilityWeeklyRule> findByOwnerId(Long ownerId);
+
+    void deleteByOwnerId(Long ownerId);
 }
