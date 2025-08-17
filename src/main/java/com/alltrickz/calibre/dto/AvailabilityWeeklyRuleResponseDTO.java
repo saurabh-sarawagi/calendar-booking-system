@@ -4,19 +4,18 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
-public class AppointmentResponseDTO {
+public class AvailabilityWeeklyRuleResponseDTO {
     private Long id;
     private Long ownerId;
-    private String inviteeName;
-    private String inviteeEmail;
-    private LocalDate date;
+    private DayOfWeek dayOfWeek;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
+    private Boolean isActive;
 }

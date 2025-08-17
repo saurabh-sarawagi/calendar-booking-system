@@ -8,13 +8,13 @@ import com.alltrickz.calibre.entity.Appointment;
 import com.alltrickz.calibre.entity.AvailabilityRule;
 import com.alltrickz.calibre.entity.Owner;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +26,9 @@ public class TimeSlotService {
 
     public List<TimeSlotResponseDTO> getAvailableTimeSlots(Long ownerId, LocalDate date) throws Exception {
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
-        AvailabilityRule availabilityRule = availabilityRepository.findByOwner(owner);
+        Optional<AvailabilityRule> availabilityRuleOptional = availabilityRepository.findByOwner(owner);
 
-        // Owner has not defined their availability
-        if (ObjectUtils.isEmpty(availabilityRule)) {
+        if (availabilityRuleOptional.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -39,8 +38,8 @@ public class TimeSlotService {
         }
 
         // Parse start and end time
-        LocalTime start = availabilityRule.getStartTime();
-        LocalTime end = availabilityRule.getEndTime();
+        LocalTime start = availabilityRuleOptional.get().getStartTime();
+        LocalTime end = availabilityRuleOptional.get().getEndTime();
 
         List<TimeSlotResponseDTO> allSlots = new ArrayList<>();
 

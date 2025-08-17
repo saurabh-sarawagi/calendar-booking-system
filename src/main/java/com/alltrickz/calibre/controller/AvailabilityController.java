@@ -1,12 +1,13 @@
 package com.alltrickz.calibre.controller;
 
-import com.alltrickz.calibre.dto.AvailabilityRequestDTO;
-import com.alltrickz.calibre.dto.AvailabilityResponseDTO;
+import com.alltrickz.calibre.dto.*;
 import com.alltrickz.calibre.service.AvailabilityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/availability")
@@ -15,14 +16,29 @@ public class AvailabilityController {
 
     private final AvailabilityService availabilityService;
 
-    @PostMapping("/set")
-    public ResponseEntity<AvailabilityResponseDTO> setAvailability(@Valid @RequestBody AvailabilityRequestDTO availabilityRequestDTO) throws Exception {
-        return ResponseEntity.ok(availabilityService.setAvailability(availabilityRequestDTO));
+    @PostMapping("/weekly/set/{ownerId}")
+    public ResponseEntity<List<AvailabilityWeeklyRuleResponseDTO>> setWeeklyAvailability(@PathVariable Long ownerId, @Valid @RequestBody List<AvailabilityWeeklyRuleRequestDTO> availabilityWeeklyRuleRequestDTO) throws Exception {
+        return ResponseEntity.ok(availabilityService.setWeeklyAvailability(ownerId, availabilityWeeklyRuleRequestDTO));
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<AvailabilityResponseDTO> updateAvailability(@Valid @RequestBody AvailabilityRequestDTO availabilityRequestDTO) throws Exception {
-        return ResponseEntity.ok(availabilityService.updateAvailability(availabilityRequestDTO));
+    @GetMapping("/weekly/{ownerId}")
+    public ResponseEntity<List<AvailabilityWeeklyRuleResponseDTO>> getWeeklyAvailability(@PathVariable Long ownerId) throws Exception {
+        return ResponseEntity.ok(availabilityService.getWeeklyAvailability(ownerId));
     }
 
+    @PostMapping("/exception/add/{ownerId}")
+    public ResponseEntity<List<AvailabilityExceptionRuleResponseDTO>> addExceptionRules(@PathVariable Long ownerId, @Valid @RequestBody List<AvailabilityExceptionRuleRequestDTO> availabilityExceptionRuleRequestDTO) throws Exception {
+        return ResponseEntity.ok(availabilityService.addExceptionRules(ownerId, availabilityExceptionRuleRequestDTO));
+    }
+
+    @GetMapping("/exception/{ownerId}")
+    public ResponseEntity<List<AvailabilityExceptionRuleResponseDTO>> getExceptionRules(@PathVariable Long ownerId) throws Exception {
+        return ResponseEntity.ok(availabilityService.getExceptionRules(ownerId));
+    }
+
+    @DeleteMapping("/exception/delete/{id}")
+    public ResponseEntity<Void> editExceptionRule(@PathVariable Long id) throws Exception {
+        availabilityService.deleteExceptionRules(id);
+        return ResponseEntity.noContent().build();
+    }
 }

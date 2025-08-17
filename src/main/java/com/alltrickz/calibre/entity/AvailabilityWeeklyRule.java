@@ -8,11 +8,15 @@ import java.time.LocalTime;
 
 @Entity
 @Data
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"owner_id", "day_of_week"}))
 public class AvailabilityWeeklyRule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Owner owner;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -23,9 +27,6 @@ public class AvailabilityWeeklyRule {
     private LocalTime endTime;
 
     @Column(nullable = false)
-    private Boolean isAvailable;
-
-    @ManyToOne
-    private AvailabilityRuleSet availabilityRuleSet;
+    private Boolean isActive;
 
 }

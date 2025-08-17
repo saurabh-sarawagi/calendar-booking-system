@@ -1,17 +1,14 @@
 package com.alltrickz.calibre.service;
 
 import com.alltrickz.calibre.dao.AppointmentRepository;
-import com.alltrickz.calibre.dao.AvailabilityRepository;
 import com.alltrickz.calibre.dao.OwnerRepository;
 import com.alltrickz.calibre.dto.AppointmentRequestDTO;
 import com.alltrickz.calibre.dto.AppointmentResponseDTO;
 import com.alltrickz.calibre.dto.TimeSlotResponseDTO;
 import com.alltrickz.calibre.entity.Appointment;
-import com.alltrickz.calibre.entity.AvailabilityRule;
 import com.alltrickz.calibre.entity.Owner;
 import com.alltrickz.calibre.mapper.AppointmentMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -25,7 +22,6 @@ import java.util.Optional;
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final AvailabilityRepository availabilityRepository;
     private final OwnerRepository ownerRepository;
     private final TimeSlotService timeSlotService;
 
@@ -75,13 +71,6 @@ public class AppointmentService {
 
     public List<AppointmentResponseDTO> getUpcomingAppointments(@RequestParam Long ownerId) throws Exception {
         Owner owner = ownerRepository.findById(ownerId).orElseThrow(() -> new Exception("Owner Not Found"));
-
-        AvailabilityRule availabilityRule = availabilityRepository.findByOwner(owner);
-
-        if (ObjectUtils.isEmpty(availabilityRule)) {
-            throw new Exception("Owner is not available for appointments.");
-        }
-
         List<Appointment> appointments = appointmentRepository.findUpcomingAppointments(ownerId, LocalDate.now(), LocalTime.now());
         return appointments.stream().map(AppointmentMapper::mapToResponse).toList();
     }

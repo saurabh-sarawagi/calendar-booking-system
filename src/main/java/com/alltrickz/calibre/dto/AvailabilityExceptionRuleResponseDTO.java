@@ -9,14 +9,14 @@ import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
-public class AppointmentResponseDTO {
+public class AvailabilityExceptionRuleResponseDTO {
     private Long id;
     private Long ownerId;
-    private String inviteeName;
-    private String inviteeEmail;
     private LocalDate date;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
+    private Boolean isActive;
+    private String description;
 }

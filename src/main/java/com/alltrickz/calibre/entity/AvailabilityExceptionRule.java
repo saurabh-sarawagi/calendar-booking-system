@@ -8,21 +8,25 @@ import java.time.LocalTime;
 
 @Entity
 @Data
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"owner_id", "date"}))
 public class AvailabilityExceptionRule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate localDate;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Owner owner;
+
+    @Column(nullable = false)
+    private LocalDate date;
 
     private LocalTime startTime;
 
     private LocalTime endTime;
 
     @Column(nullable = false)
-    private Boolean isAvailable;
+    private Boolean isActive;
 
-    @ManyToOne
-    private AvailabilityRuleSet availabilityRuleSet;
+    private String description;
 }
