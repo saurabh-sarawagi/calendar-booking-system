@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Repository for Appointment entity.
- * Provides methods to fetch appointments based on owner and date.
+ * Provides methods to deal with user appointments.
  */
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 

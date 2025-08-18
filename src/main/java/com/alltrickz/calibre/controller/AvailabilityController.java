@@ -71,7 +71,7 @@ public class AvailabilityController {
      * @param ownerId ID of the calendar owner
      * @return list of exception rules
      */
-    @Operation(summary = "Add exception rules", description = "Adds exception rules (specific date overrides) for the given owner.")
+    @Operation(summary = "Gets all exception rules", description = "Gets all exception rules (specific date overrides) for the given owner.")
     @GetMapping("/exception/{ownerId}")
     public ResponseEntity<List<AvailabilityExceptionRuleResponseDTO>> getExceptionRules(@PathVariable Long ownerId) throws Exception {
         return ResponseEntity.ok(availabilityService.getExceptionRules(ownerId));

@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Repository for AvailabilityWeeklyRule entity.
- * Provides methods to fetch and delete weekly rules for an owner.
+ * Provides methods to deal with weekly rules for owners.
  */
 public interface AvailabilityWeeklyRuleRepository extends JpaRepository<AvailabilityWeeklyRule, Long> {
 

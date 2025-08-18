@@ -7,6 +7,9 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * DTO for sending availability exception rules back in responses.
+ */
 @Data
 @AllArgsConstructor
 public class AvailabilityExceptionRuleResponseDTO {

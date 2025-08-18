@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Repository for AvailabilityExceptionRule entity.
- * Provides methods to fetch exception rules for a given owner.
+ * Provides methods to deal with exception rules for a given owner.
  */
 public interface AvailabilityExceptionRuleRepository extends JpaRepository<AvailabilityExceptionRule, Long> {
 
